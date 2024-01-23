@@ -7,7 +7,9 @@ import { revalidatePath } from "next/cache"
 import Link from "next/link"
 
 export default async function ApplicantsPage() {
-    const res = await fetch(process.env.API + "/applicants")
+    const res = await fetch(process.env.API + "/applicants", {
+        cache: "no-store"
+    })
     const data: { id: number, name: string, documents: { id: number, documentName: string }[] }[] = await res.json()
 
     return (
@@ -34,16 +36,18 @@ export default async function ApplicantsPage() {
                                     },
                                     body: JSON.stringify({
                                         name: formData.get("name")
-                                    })
+                                    }),
+                                    cache: "no-store"
                                 })
                                 const document = formData.get("document")
-                                if (document) {
+                                if (document !== undefined && document !== null && (document instanceof File && document.size > 0)) {
                                     const fileData = new FormData()
                                     fileData.append("file", document)
                                     const applicant: { id: number, name: string, documents: { id: number, documentName: string }[] } = await res.json()
                                     await fetch(process.env.API + "/" + applicant.id + "/documents/upload", {
                                         method: "post",
-                                        body: fileData
+                                        body: fileData,
+                                        cache: "no-store"
                                     })
                                 }
                                 revalidatePath("/applicants")
@@ -54,7 +58,7 @@ export default async function ApplicantsPage() {
                                 </div>
                                 <div>
                                     <Label htmlFor="document">Dokument</Label>
-                                    <Input type="file" id="document" name="document" required />
+                                    <Input type="file" id="document" name="document" />
                                 </div>
                                 <DialogClose asChild>
                                     <Button type="submit" className="mt-4">Erstellen</Button>
@@ -74,7 +78,8 @@ export default async function ApplicantsPage() {
                                 <Button variant="ghost" className="p-2" formAction={async () => {
                                     "use server"
                                     await fetch(process.env.API + "/applicants/" + applicant.id, {
-                                        method: "delete"
+                                        method: "delete",
+                                        cache: "no-store"
                                     })
                                     revalidatePath("/applicants")
                                 }}>
