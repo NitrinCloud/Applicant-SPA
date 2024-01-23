@@ -17,3 +17,17 @@ bun dev
 You need to set "API" enviorment variable to the api url
 
 Learn more about the api at [Applicant-API](https://github.com/NitrinCloud/Applicant-API)
+
+
+Technologies used: NextJS, Bun, Shadcn/ui, TailwindCSS
+
+
+## Showcase
+
+### Show
+
+![big](./showcase/big.png)
+
+### Create
+
+![big](./showcase/create.png)
